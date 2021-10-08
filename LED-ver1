@@ -1,0 +1,108 @@
+// includes
+#define FASTLED_INTERNAL
+#include <FastLED.h>
+#include <pixeltypes.h>
+
+
+// number of total addressable LED's
+#define NUM_LEDS 22
+
+// PWM data pin out
+#define DATA_PIN 5
+
+// define FAST LED array of LEDs
+CRGB leds[NUM_LEDS];
+
+//define the FAST LED COLOURS
+CRGB colourGREEN = CRGB::Red;
+CRGB colourRED = CRGB::Green;
+CRGB colourYELLOW = CRGB(0xCCCC00);
+CRGB colourBLUE = CRGB::Blue;
+CRGB colourBLACK = CRGB::Black;
+
+//CRGB custom = CRGB::Black;
+
+// initalize RGB vars
+int r,g,b = 0;
+int i = 0;
+
+char cycle = ' ';
+int clr = 0;
+
+
+
+// inital func
+void setup() {
+  Serial.begin(9600);
+  FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);
+  Serial.println("Menu:");  
+  FastLED.setBrightness(10);
+
+}
+
+void batteryAnimation(char cycle_num){
+  //define the sin animation based on the cycle number
+  
+  if (cycle_num == '1'){  
+    //define the FAST LED RED
+    for(int i =21; i>13;i--){
+      leds[i] = colourRED;
+      //uint8_t blurAmount = dim8_raw(0.5);       // beatsin8(3,64, 192), A sinewave at 3 Hz with values ranging from 64 to 192.
+      //blur1d( leds, NUM_LEDS, blurAmount);  
+    }
+  } 
+    
+  if (cycle_num == '2'){  
+    //define the FAST LED RED
+    for(int i =21; i>8;i--){
+      if(i==13){
+        leds[i] = colourBLACK;
+      }else{
+      leds[i] = colourYELLOW;
+      }
+      //uint8_t blurAmount = dim8_raw(0.5);       // beatsin8(3,64, 192), A sinewave at 3 Hz with values ranging from 64 to 192.
+      //blur1d( leds, NUM_LEDS, blurAmount);  
+    }
+      
+  } 
+    
+  if(cycle_num == '3'){
+    for(int i =21; i>0;i--){
+      if(i==13){
+        leds[i] = colourBLACK;
+      }else{
+      leds[i] = colourGREEN;
+      //uint8_t blurAmount = dim8_raw(100);       // beatsin8(3,64, 192), A sinewave at 3 Hz with values ranging from 64 to 192.
+      //blur1d( leds, NUM_LEDS, blurAmount);  
+      }
+    }
+    
+  }
+  else if(cycle_num == '4'){
+    for(int i = 0; i<NUM_LEDS; i++){
+      leds[i] = colourBLACK;
+      //uint8_t blurAmount = dim8_raw(1);       // beatsin8(3,64, 192), A sinewave at 3 Hz with values ranging from 64 to 192.
+      //blur1d( leds, NUM_LEDS, blurAmount);  
+    }
+  }
+ 
+}
+  
+  
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  if(Serial.available()>0){
+    cycle = Serial.read();
+    Serial.println(cycle);
+  }
+  batteryAnimation(cycle);
+  
+  //uint8_t blurAmount = dim8_raw(0.5);       // beatsin8(3,64, 192), A sinewave at 3 Hz with values ranging from 64 to 192.
+  //blur1d( leds, NUM_LEDS, blurAmount);                        // Apply some blurring to whatever's already on the strip, which will eventually go black.
+  
+  FastLED.show();
+
+ 
+
+}
