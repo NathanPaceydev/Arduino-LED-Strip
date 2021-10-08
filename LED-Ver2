@@ -1,0 +1,111 @@
+// includes
+#define FASTLED_INTERNAL
+#include <FastLED.h>
+#include <pixeltypes.h>
+
+
+// number of total addressable LED's
+#define NUM_LEDS 22
+
+// PWM data pin out
+#define DATA_PIN 5
+
+// define FAST LED array of LEDs
+CRGB leds[NUM_LEDS];
+
+//define the FAST LED COLOURS
+CRGB colourGREEN = CRGB::Red;
+CRGB colourRED = CRGB::Green;
+CRGB colourYELLOW = CRGB(0xCCCC00);
+CRGB colourBLUE = CRGB::Blue;
+CRGB colourBLACK = CRGB::Black;
+
+unsigned long Time;
+char cycle = ' ';
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  FastLED.addLeds<WS2812, DATA_PIN, RGB>(leds, NUM_LEDS);
+  Serial.println("Menu:");  
+  FastLED.setBrightness(10);
+
+}
+
+void batteryAnimation1(long Time, char cycle){
+
+ if(cycle == '1'){
+    for (int i = NUM_LEDS; i>=0; i--){
+      
+      
+      if(i<9){
+      leds[i] = colourGREEN;
+      }
+      
+  
+      if(i >= 9){
+        leds[i] = colourYELLOW;
+        }
+      if(i==13){
+        leds[i] = colourBLACK;
+      }
+        
+      if(i>=14){
+        leds[i] = colourRED;
+      }
+      delay(1000);
+      FastLED.show();
+     }
+
+    for(int j = NUM_LEDS; j> 0;j--){
+      leds[j] = colourGREEN;
+      if(j==13){
+        leds[j]=colourBLACK;
+      }
+      
+    }
+    FastLED.show();
+    delay(500);
+    for(int j = 0; j< NUM_LEDS;j++){
+      leds[j] = colourBLACK;
+      if(j==13){
+        leds[j]=colourBLACK;
+      }
+      
+    }
+    FastLED.show();
+    delay(500);
+
+    for(int j = NUM_LEDS; j> 0;j--){
+      leds[j] = colourGREEN;
+      if(j==13){
+        leds[j]=colourBLACK;
+      }
+      
+    }
+    FastLED.show();
+
+  }
+  else if(cycle == '4'){
+    for(int i = 0; i<NUM_LEDS; i++){
+      leds[i] = colourBLACK;
+      FastLED.show();
+      //uint8_t blurAmount = dim8_raw(1);       // beatsin8(3,64, 192), A sinewave at 3 Hz with values ranging from 64 to 192.
+      //blur1d( leds, NUM_LEDS, blurAmount);  
+    }
+  }
+  
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  if(Serial.available()>0){
+    cycle = Serial.read();
+    Serial.println(cycle);
+    Time = millis();
+    batteryAnimation1(Time,cycle);
+  }
+
+  
+
+}
